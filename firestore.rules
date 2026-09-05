@@ -1,0 +1,51 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function tierRank(t) {
+      return t == 'officer' ? 2 : (t == 'supporter' ? 1 : 0);
+    }
+
+    // Each signed-in session (including anonymous ones) owns exactly one
+    // profile document, keyed by its own auth uid.
+    match /users/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow create: if request.auth != null && request.auth.uid == uid
+                    && request.resource.data.tier == 'free';
+
+      allow update: if request.auth != null && request.auth.uid == uid && (
+        // Ordinary saves (custom events, snapshots, history) must leave tier untouched.
+        request.resource.data.tier == resource.data.tier
+        ||
+        // Unlocking a tier: only allowed up to what the referenced code grants,
+        // and never downgrades a tier the user already has. The matching
+        // codes/{code} write in the same client transaction is what actually
+        // consumes it (see that rule below) — this rule only checks the code
+        // is real, still unused, and grants at least this tier right now.
+        (
+          request.resource.data.tier is string &&
+          request.resource.data.tierGrantedByCode is string &&
+          tierRank(request.resource.data.tier) >= tierRank(resource.data.tier) &&
+          tierRank(request.resource.data.tier) <= tierRank(get(/databases/$(database)/documents/codes/$(request.resource.data.tierGrantedByCode)).data.tier) &&
+          get(/databases/$(database)/documents/codes/$(request.resource.data.tierGrantedByCode)).data.used == false
+        )
+      );
+    }
+
+    // Redemption codes are generated out-of-band (by your Ko-fi fulfillment
+    // step, added via the Firebase console or Admin SDK). Each has a `tier`
+    // field ("supporter" or "officer") set at creation and never changed.
+    // Clients can only ever flip `used` from false to true, never create one.
+    match /codes/{code} {
+      allow read: if request.auth != null;
+      allow create: if false;
+      allow delete: if false;
+      allow update: if request.auth != null
+                    && resource.data.used == false
+                    && request.resource.data.used == true
+                    && request.resource.data.redeemedBy == request.auth.uid
+                    && request.resource.data.tier == resource.data.tier;
+    }
+  }
+}

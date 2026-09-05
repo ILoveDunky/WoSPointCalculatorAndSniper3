@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: var(--font-manrope), Manrope, Arial, Helvetica, sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-space-grotesk), 'Space Grotesk', var(--font-manrope), Manrope, sans-serif;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@layer base {
+  :root, .dark {
+    --background: 215 47% 8%;
+    --foreground: 200 32% 95%;
+    --card: 213 41% 12%;
+    --card-foreground: 200 32% 95%;
+    --popover: 213 41% 11%;
+    --popover-foreground: 200 32% 95%;
+    --primary: 189 66% 52%;
+    --primary-foreground: 215 47% 8%;
+    --secondary: 213 30% 19%;
+    --secondary-foreground: 200 32% 95%;
+    --muted: 213 26% 17%;
+    --muted-foreground: 205 18% 65%;
+    --accent: 38 91% 55%;
+    --accent-foreground: 215 47% 8%;
+    --destructive: 3 72% 52%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 213 28% 20%;
+    --input: 213 28% 20%;
+    --ring: 189 66% 52%;
+    --radius: 0.25rem;
+    --chart-1: 189 66% 52%;
+    --chart-2: 38 91% 55%;
+    --chart-3: 262 52% 63%;
+    --chart-4: 152 45% 50%;
+    --chart-5: 3 72% 52%;
+    --sidebar-background: 213 41% 11%;
+    --sidebar-foreground: 200 32% 95%;
+    --sidebar-primary: 189 66% 52%;
+    --sidebar-primary-foreground: 215 47% 8%;
+    --sidebar-accent: 213 30% 19%;
+    --sidebar-accent-foreground: 200 32% 95%;
+    --sidebar-border: 213 28% 20%;
+    --sidebar-ring: 189 66% 52%;
+  }
+}
+
+/* Faint topographic contour lines — the structural motif in place of a
+   glow/gradient hero. Reads as ice-sheet elevation lines at a distance. */
+.contour-field {
+  background-image: repeating-radial-gradient(
+    ellipse at 12% -10%,
+    transparent 0,
+    transparent 64px,
+    hsl(189 66% 52% / 0.05) 65px,
+    hsl(189 66% 52% / 0.05) 66px
+  );
+}
+
+/* Vertical core-sample rule used behind the day stepper. */
+.core-line {
+  background-image: linear-gradient(to bottom, hsl(213 28% 24%) 0, hsl(213 28% 24%) 100%);
+  background-size: 1px 100%;
+  background-repeat: no-repeat;
+  background-position: left center;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  .large-text {
+    font-size: 1.1em !important;
+  }
+
+  .extra-large-text {
+    font-size: 1.25em !important;
+  }
+
+  .high-contrast {
+    --foreground: #ffffff;
+    --card-foreground: #ffffff;
+    --popover-foreground: #ffffff;
+    --primary-foreground: #ffffff;
+    --secondary-foreground: #ffffff;
+    --muted-foreground: #ffffff;
+    --accent-foreground: #000000;
+    --border: #ffffff;
+    --background: #000000;
+    --card: #000000;
+  }
+
+  .reduced-motion * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@keyframes tick-up {
+  0% { transform: translateY(4px); opacity: 0.5; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.animate-tick {
+  animation: tick-up 180ms ease-out;
+}
