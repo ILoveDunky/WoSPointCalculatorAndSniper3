@@ -4,4 +4,4 @@
 // that needs to build a root-relative asset URL by hand, like metadata icons,
 // which are NOT automatically prefixed with basePath the way file-based
 // conventions (favicon.ico, robots.txt) are.
-export const BASE_PATH = '/WoSPointCalculatorAndSniper2';
+export const BASE_PATH = '/WoSPointCalculatorAndSniper3';
